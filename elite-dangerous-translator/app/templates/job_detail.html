@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Job #{{ job.id }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/app.css') }}">
+  </head>
+  <body>
+    <main class="page">
+      <a href="/jobs">Back to jobs</a>
+      <header>
+        <p class="eyebrow">Draft-oriented job</p>
+        <h1>Job #{{ job.id }}</h1>
+      </header>
+
+      <section class="metadata" aria-label="Job metadata">
+        <p><strong>Type:</strong> {{ job.job_type }}</p>
+        <p><strong>Status:</strong> {{ job.status }}</p>
+        <p><strong>Target language:</strong> {{ job.target_language }}</p>
+        <p><strong>Created:</strong> {{ job.created_at }}</p>
+        {% if job.error_message %}<p><strong>Error:</strong> {{ job.error_message }}</p>{% endif %}
+      </section>
+
+      <section class="panel">
+        <h2>Article</h2>
+        <p><a href="/articles/{{ job.article_id }}">{{ job.article.source_title }}</a></p>
+        <p><strong>Source type:</strong> {{ job.article.source_type }}</p>
+        <pre class="source-text compact">{{ job.article.source_body }}</pre>
+      </section>
+
+      <section class="panel">
+        <h2>Logs</h2>
+        {% if job.logs %}
+          <ol class="timeline">
+            {% for log in job.logs|sort(attribute='created_at') %}
+              <li>
+                <strong>{{ log.stage }}</strong>
+                <span>{{ log.created_at }}</span>
+                <p>{{ log.message }}</p>
+              </li>
+            {% endfor %}
+          </ol>
+        {% else %}
+          <p>No logs recorded for this job.</p>
+        {% endif %}
+      </section>
+    </main>
+  </body>
+</html>

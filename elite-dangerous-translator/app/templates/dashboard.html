@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ app_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/app.css') }}">
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <p class="eyebrow">Local MVP</p>
+        <h1>{{ app_name }}</h1>
+        <p>Submit Elite Dangerous lore drafts, queue translation work, and inspect job status locally.</p>
+        <p><a class="button" href="/articles/manual/new">Submit manual lore draft</a></p>
+      </header>
+
+      <section class="grid" aria-label="Dashboard sections">
+        <a class="tile" href="/articles/manual/new">Manual submit</a>
+        <a class="tile" href="/jobs">Jobs</a>
+        <a class="tile" href="/glossary">Glossary</a>
+        <a class="tile" href="/translation-memory">Translation memory</a>
+        <a class="tile" href="/settings">Settings</a>
+      </section>
+
+      <section class="panel" aria-labelledby="recent-jobs-heading">
+        <div class="section-heading">
+          <h2 id="recent-jobs-heading">Recent jobs</h2>
+          <a href="/jobs">View all</a>
+        </div>
+        {% if recent_jobs %}
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Job</th>
+                <th>Article</th>
+                <th>Status</th>
+                <th>Target</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for job in recent_jobs %}
+                <tr>
+                  <td><a href="/jobs/{{ job.id }}">#{{ job.id }} {{ job.job_type }}</a></td>
+                  <td><a href="/articles/{{ job.article_id }}">{{ job.article.source_title }}</a></td>
+                  <td>{{ job.status }}</td>
+                  <td>{{ job.target_language }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p>No jobs yet. Start with a manual lore draft.</p>
+        {% endif %}
+      </section>
+    </main>
+  </body>
+</html>

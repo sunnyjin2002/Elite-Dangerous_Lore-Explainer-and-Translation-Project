@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Jobs</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/app.css') }}">
+  </head>
+  <body>
+    <main class="page">
+      <a href="/">Back to dashboard</a>
+      <div class="section-heading">
+        <h1>Jobs</h1>
+        <a class="button" href="/articles/manual/new">Submit manual draft</a>
+      </div>
+
+      {% if jobs %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Job</th>
+              <th>Article</th>
+              <th>Status</th>
+              <th>Target</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for job in jobs %}
+              <tr>
+                <td><a href="/jobs/{{ job.id }}">#{{ job.id }} {{ job.job_type }}</a></td>
+                <td><a href="/articles/{{ job.article_id }}">{{ job.article.source_title }}</a></td>
+                <td>{{ job.status }}</td>
+                <td>{{ job.target_language }}</td>
+                <td>{{ job.created_at }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>No jobs yet.</p>
+      {% endif %}
+    </main>
+  </body>
+</html>

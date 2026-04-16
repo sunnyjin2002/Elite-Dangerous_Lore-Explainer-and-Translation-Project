@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Manual submit</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/app.css') }}">
+  </head>
+  <body>
+    <main class="page narrow">
+      <a href="/">Back to dashboard</a>
+      <header>
+        <p class="eyebrow">Draft intake</p>
+        <h1>Manual lore submission</h1>
+        <p>Create a source article and queue a draft-oriented translation job. Translation will not run yet.</p>
+      </header>
+
+      {% if errors %}
+        <div class="errors" role="alert" aria-labelledby="errors-heading">
+          <h2 id="errors-heading">Fix these fields</h2>
+          <ul>
+            {% for error in errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <form class="form" method="post" action="/articles/manual">
+        <label for="title">Title <span>optional</span></label>
+        <input id="title" name="title" type="text" maxlength="500" value="{{ form.title or '' }}">
+
+        <label for="source_url">Source URL <span>optional</span></label>
+        <input id="source_url" name="source_url" type="url" maxlength="1024" value="{{ form.source_url or '' }}">
+
+        <label for="source_text">Source text</label>
+        <textarea id="source_text" name="source_text" rows="14" required>{{ form.source_text or '' }}</textarea>
+
+        <label for="target_language">Target language</label>
+        <input id="target_language" name="target_language" type="text" maxlength="16" value="{{ form.target_language or 'zh-CN' }}">
+
+        <button class="button" type="submit">Queue manual draft</button>
+      </form>
+    </main>
+  </body>
+</html>

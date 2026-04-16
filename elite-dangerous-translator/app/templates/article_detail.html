@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ article.source_title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/app.css') }}">
+  </head>
+  <body>
+    <main class="page">
+      <a href="/">Back to dashboard</a>
+      <header>
+        <p class="eyebrow">Article #{{ article.id }}</p>
+        <h1>{{ article.source_title }}</h1>
+      </header>
+
+      <section class="metadata" aria-label="Article metadata">
+        <p><strong>Source type:</strong> {{ article.source_type }}</p>
+        <p><strong>Source URL:</strong>
+          {% if article.source_url %}<a href="{{ article.source_url }}">{{ article.source_url }}</a>{% else %}None{% endif %}
+        </p>
+        <p><strong>Discovered:</strong> {{ article.discovered_at }}</p>
+        <p><strong>Updated:</strong> {{ article.updated_at }}</p>
+      </section>
+
+      <section class="panel">
+        <h2>Source text</h2>
+        <pre class="source-text">{{ article.source_body }}</pre>
+      </section>
+
+      <section class="panel">
+        <h2>Jobs</h2>
+        {% if article.jobs %}
+          <ul class="list">
+            {% for job in article.jobs %}
+              <li>
+                <a href="/jobs/{{ job.id }}">Job #{{ job.id }}</a>
+                <span>{{ job.job_type }} ? {{ job.status }} ? {{ job.target_language }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No jobs are attached to this article.</p>
+        {% endif %}
+      </section>
+    </main>
+  </body>
+</html>
