@@ -1,9 +1,10 @@
 """Article routes."""
 
+from pathlib import Path
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, status
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
@@ -11,7 +12,7 @@ from app.db.session import get_db
 from app.services.ingestion_service import IngestionService
 
 router = APIRouter(prefix="/articles", tags=["articles"])
-templates = Jinja2Templates(directory="app/templates")
+templates = Jinja2Templates(directory=Path(__file__).resolve().parents[1] / "templates")
 ingestion_service = IngestionService()
 
 
@@ -34,7 +35,7 @@ def manual_submit(request: Request) -> HTMLResponse:
     )
 
 
-@router.post("/manual", response_class=HTMLResponse)
+@router.post("/manual", response_class=HTMLResponse, response_model=None)
 def submit_manual_article(
     request: Request,
     db: Annotated[Session, Depends(get_db)],
@@ -42,7 +43,7 @@ def submit_manual_article(
     source_url: Annotated[str | None, Form()] = None,
     source_text: Annotated[str | None, Form()] = None,
     target_language: Annotated[str, Form()] = "zh-CN",
-) -> HTMLResponse | RedirectResponse:
+) -> Response:
     """Validate and persist a manual lore submission."""
     submission, errors = ingestion_service.validate_manual_submission(
         title=title,

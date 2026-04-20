@@ -3,8 +3,8 @@
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.pool import StaticPool
 
-from app.db.base import Base
 from app.db import models  # noqa: F401
+from app.db.base import Base
 
 
 def test_models_create_expected_tables() -> None:

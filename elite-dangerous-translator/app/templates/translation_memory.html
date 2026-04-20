@@ -9,8 +9,104 @@
   <body>
     <main class="page">
       <a href="/">Back to dashboard</a>
-      <h1>Translation memory</h1>
-      <p>Translation memory import and search will be added in a later phase.</p>
+      <header>
+        <p class="eyebrow">Reference passages</p>
+        <h1>Translation memory</h1>
+        <p>Import and search reusable EN-CN passages for later translation and review services.</p>
+      </header>
+
+      {% if message %}
+        <div class="notice" role="status">{{ message }}</div>
+      {% endif %}
+
+      {% if errors %}
+        <div class="errors" role="alert" aria-labelledby="errors-heading">
+          <h2 id="errors-heading">Import failed</h2>
+          <ul>
+            {% for error in errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <section class="panel">
+        <div class="section-heading">
+          <h2>Search passages</h2>
+          <span>{{ entries|length }} shown</span>
+        </div>
+        <form class="inline-form" method="get" action="/translation-memory">
+          <input name="q" type="search" value="{{ query }}" placeholder="Search source text or tags">
+          <button class="button" type="submit">Search</button>
+          {% if query %}<a href="/translation-memory">Clear</a>{% endif %}
+        </form>
+      </section>
+
+      <section class="panel">
+        <h2>Import CSV</h2>
+        <p>Upload a CSV file, or enter a file name already stored under <code>data/references/translation_memory/</code>.</p>
+        <form class="form" method="post" action="/translation-memory/import" enctype="multipart/form-data">
+          <label for="memory_file">CSV file</label>
+          <input id="memory_file" name="memory_file" type="file" accept=".csv,text/csv">
+
+          <label for="file_name">Existing translation memory file name <span>optional</span></label>
+          <input id="file_name" name="file_name" type="text" placeholder="translation_memory.csv">
+
+          <button class="button" type="submit">Import translation memory</button>
+        </form>
+      </section>
+
+      {% if query %}
+        <section class="panel">
+          <h2>Retrieved matches</h2>
+          {% if matches %}
+            <ol class="timeline">
+              {% for match in matches %}
+                <li>
+                  <strong>Score {{ '%.1f'|format(match.score) }}</strong>
+                  <span>Matched: {{ match.matched_terms|join(', ') }}</span>
+                  <p><strong>Source:</strong> {{ match.entry.source_text }}</p>
+                  <p><strong>Translation:</strong> {{ match.entry.translated_text }}</p>
+                  {% if match.entry.source_reference %}<p><strong>Reference:</strong> {{ match.entry.source_reference }}</p>{% endif %}
+                  {% if match.entry.tags %}<p><strong>Tags:</strong> {{ match.entry.tags }}</p>{% endif %}
+                </li>
+              {% endfor %}
+            </ol>
+          {% else %}
+            <p>No lexical matches found for this query.</p>
+          {% endif %}
+        </section>
+      {% endif %}
+
+      <section class="panel">
+        <h2>Imported passages</h2>
+        {% if entries %}
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Source</th>
+                <th>Translation</th>
+                <th>Reference</th>
+                <th>Tags</th>
+                <th>Created</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for entry in entries %}
+                <tr>
+                  <td>{{ entry.source_text }}</td>
+                  <td>{{ entry.translated_text }}</td>
+                  <td>{{ entry.source_reference or '' }}</td>
+                  <td>{{ entry.tags or '' }}</td>
+                  <td>{{ entry.created_at }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p>No translation memory passages found.</p>
+        {% endif %}
+      </section>
     </main>
   </body>
 </html>

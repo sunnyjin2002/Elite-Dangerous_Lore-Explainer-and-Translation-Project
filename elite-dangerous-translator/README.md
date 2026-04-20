@@ -35,6 +35,56 @@ Invoke-RestMethod http://127.0.0.1:8000/health
 ```
 
 
+
+
+## Translation Memory
+
+Translation memory CSV files live under `data/references/translation_memory/`. Supported columns are:
+
+- `source_text`
+- `translated_text`
+- `source_reference`
+- `tags`
+
+Import one file from the command line:
+
+```powershell
+python scripts/import_translation_memory.py data/references/translation_memory/example.csv
+```
+
+Import every CSV file under `data/references/translation_memory/`:
+
+```powershell
+python scripts/import_translation_memory.py
+```
+
+The browser translation memory page at `/translation-memory` can import CSV files, browse passages, and run lexical retrieval over source text and tags.
+
+## Glossary
+
+Glossary CSV files live under `data/glossary/`. Supported columns are:
+
+- `source_term_en`
+- `approved_term_zh`
+- `aliases_en`
+- `entity_type`
+- `notes`
+- `status`
+
+Import one file from the command line:
+
+```powershell
+python scripts/import_glossary.py data/glossary/example.csv
+```
+
+Import every CSV file under `data/glossary/`:
+
+```powershell
+python scripts/import_glossary.py
+```
+
+The browser glossary page at `/glossary` can search, import CSV files, add entries, and edit existing entries.
+
 ## Manual Submission Flow
 
 The browser workflow supports:

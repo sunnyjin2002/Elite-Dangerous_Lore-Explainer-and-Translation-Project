@@ -5,8 +5,8 @@ Revises:
 Create Date: 2026-04-16 00:00:00
 """
 
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 
 revision = "20260416_0001"
 down_revision = None
@@ -80,9 +80,18 @@ def upgrade() -> None:
         sa.Column("source_title", sa.String(length=500), nullable=False),
         sa.Column("source_body", sa.Text(), nullable=False),
         sa.Column("published_at_source", sa.DateTime(), nullable=True),
-        sa.Column("discovered_at", sa.DateTime(), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False),
-        sa.Column("created_at", sa.DateTime(), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False),
-        sa.Column("updated_at", sa.DateTime(), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False),
+        sa.Column(
+            "discovered_at",
+            sa.DateTime(),
+            server_default=sa.text("CURRENT_TIMESTAMP"),
+            nullable=False,
+        ),
+        sa.Column(
+            "created_at", sa.DateTime(), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False
+        ),
+        sa.Column(
+            "updated_at", sa.DateTime(), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False
+        ),
     )
     op.create_table(
         "glossary_entries",
@@ -93,15 +102,21 @@ def upgrade() -> None:
         sa.Column("entity_type", sa.String(length=100), nullable=True),
         sa.Column("notes", sa.Text(), nullable=True),
         sa.Column("status", glossary_status, server_default="draft", nullable=False),
-        sa.Column("created_at", sa.DateTime(), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False),
-        sa.Column("updated_at", sa.DateTime(), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False),
+        sa.Column(
+            "created_at", sa.DateTime(), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False
+        ),
+        sa.Column(
+            "updated_at", sa.DateTime(), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False
+        ),
     )
     op.create_table(
         "tags",
         sa.Column("id", sa.Integer(), primary_key=True),
         sa.Column("name", sa.String(length=100), nullable=False),
         sa.Column("tag_type", tag_type, server_default="topic", nullable=False),
-        sa.Column("created_at", sa.DateTime(), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False),
+        sa.Column(
+            "created_at", sa.DateTime(), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False
+        ),
         sa.UniqueConstraint("name"),
     )
     op.create_table(
@@ -111,7 +126,9 @@ def upgrade() -> None:
         sa.Column("translated_text", sa.Text(), nullable=False),
         sa.Column("source_reference", sa.String(length=500), nullable=True),
         sa.Column("tags", sa.Text(), nullable=True),
-        sa.Column("created_at", sa.DateTime(), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False),
+        sa.Column(
+            "created_at", sa.DateTime(), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False
+        ),
     )
     op.create_table(
         "article_tags",
@@ -129,7 +146,9 @@ def upgrade() -> None:
         sa.Column("status", job_status, server_default="pending", nullable=False),
         sa.Column("target_language", sa.String(length=16), server_default="zh-CN", nullable=False),
         sa.Column("error_message", sa.Text(), nullable=True),
-        sa.Column("created_at", sa.DateTime(), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False),
+        sa.Column(
+            "created_at", sa.DateTime(), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False
+        ),
         sa.Column("started_at", sa.DateTime(), nullable=True),
         sa.Column("finished_at", sa.DateTime(), nullable=True),
         sa.ForeignKeyConstraint(["article_id"], ["articles.id"]),
@@ -140,7 +159,9 @@ def upgrade() -> None:
         sa.Column("job_id", sa.Integer(), nullable=False),
         sa.Column("stage", sa.String(length=100), nullable=False),
         sa.Column("message", sa.Text(), nullable=False),
-        sa.Column("created_at", sa.DateTime(), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False),
+        sa.Column(
+            "created_at", sa.DateTime(), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False
+        ),
         sa.ForeignKeyConstraint(["job_id"], ["jobs.id"]),
     )
     op.create_table(
@@ -167,7 +188,9 @@ def upgrade() -> None:
         sa.Column("review_notes", sa.Text(), nullable=True),
         sa.Column("confidence_score", sa.Float(), nullable=True),
         sa.Column("is_final", sa.Boolean(), server_default=sa.text("0"), nullable=False),
-        sa.Column("created_at", sa.DateTime(), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False),
+        sa.Column(
+            "created_at", sa.DateTime(), server_default=sa.text("CURRENT_TIMESTAMP"), nullable=False
+        ),
         sa.ForeignKeyConstraint(["article_id"], ["articles.id"]),
         sa.ForeignKeyConstraint(["job_id"], ["jobs.id"]),
     )

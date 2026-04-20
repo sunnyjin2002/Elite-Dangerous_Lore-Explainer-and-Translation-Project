@@ -2,6 +2,7 @@
 
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, Request
@@ -22,8 +23,9 @@ from app.core.scheduler import create_scheduler
 from app.db.session import create_database_tables, get_db
 from app.services.job_service import JobService
 
+APP_DIR = Path(__file__).resolve().parent
 settings = get_settings()
-templates = Jinja2Templates(directory="app/templates")
+templates = Jinja2Templates(directory=APP_DIR / "templates")
 job_service = JobService()
 
 
@@ -44,7 +46,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application."""
     app = FastAPI(title=settings.app_name, debug=settings.debug, lifespan=lifespan)
-    app.mount("/static", StaticFiles(directory="app/static"), name="static")
+    app.mount("/static", StaticFiles(directory=APP_DIR / "static"), name="static")
 
     app.include_router(articles_router)
     app.include_router(jobs_router)

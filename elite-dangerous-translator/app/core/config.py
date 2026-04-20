@@ -2,8 +2,9 @@
 
 from functools import lru_cache
 from pathlib import Path
+from typing import Any
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -30,6 +31,18 @@ class Settings(BaseSettings):
     source_poll_url: str | None = None
     source_poll_interval_minutes: int = Field(default=30, ge=1)
     auto_publish_official_news: bool = False
+
+    @field_validator("debug", mode="before")
+    @classmethod
+    def parse_debug_flag(cls, value: Any) -> Any:
+        """Accept common environment labels for the debug flag."""
+        if isinstance(value, str):
+            normalized = value.strip().lower()
+            if normalized in {"release", "prod", "production", "false", "0", "off", "no"}:
+                return False
+            if normalized in {"debug", "dev", "development", "true", "1", "on", "yes"}:
+                return True
+        return value
 
     model_config = SettingsConfigDict(
         env_file=".env",

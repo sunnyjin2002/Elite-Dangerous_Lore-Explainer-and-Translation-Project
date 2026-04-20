@@ -33,7 +33,6 @@ class IngestionService:
     def __init__(self, job_service: JobService | None = None) -> None:
         self.job_service = job_service or JobService()
 
-
     def validate_manual_submission(
         self,
         title: str | None,

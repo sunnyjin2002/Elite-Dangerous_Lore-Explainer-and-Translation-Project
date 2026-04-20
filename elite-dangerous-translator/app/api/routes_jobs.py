@@ -1,5 +1,6 @@
 """Job routes."""
 
+from pathlib import Path
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
@@ -11,7 +12,7 @@ from app.db.session import get_db
 from app.services.job_service import JobService
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
-templates = Jinja2Templates(directory="app/templates")
+templates = Jinja2Templates(directory=Path(__file__).resolve().parents[1] / "templates")
 job_service = JobService()
 
 

@@ -208,3 +208,65 @@ textarea {
     overflow-x: auto;
   }
 }
+
+.notice {
+  margin-top: 20px;
+  padding: 14px 16px;
+  border: 1px solid #7ac9a7;
+  border-radius: 8px;
+  background: #ecfdf5;
+  color: #14532d;
+}
+
+.inline-form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.inline-form input {
+  flex: 1;
+}
+
+select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #bcccdc;
+  border-radius: 8px;
+  background: #ffffff;
+  font: inherit;
+}
+
+.button-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 3px 8px;
+  border: 1px solid #bcccdc;
+  border-radius: 8px;
+  background: #f0f4f8;
+  font-size: 0.875rem;
+}
+
+@media (max-width: 640px) {
+  .inline-form,
+  .button-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+.timeline p {
+  margin: 6px 0;
+}
+
+.table td:first-child,
+.table td:nth-child(2) {
+  max-width: 360px;
+  white-space: pre-wrap;
+}

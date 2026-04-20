@@ -9,8 +9,119 @@
   <body>
     <main class="page">
       <a href="/">Back to dashboard</a>
-      <h1>Glossary</h1>
-      <p>Glossary management will be added in a later phase.</p>
+      <header>
+        <p class="eyebrow">Terminology</p>
+        <h1>Glossary</h1>
+        <p>Manage approved Elite Dangerous terminology for later translation and review services.</p>
+      </header>
+
+      {% if message %}
+        <div class="notice" role="status">{{ message }}</div>
+      {% endif %}
+
+      {% if errors %}
+        <div class="errors" role="alert" aria-labelledby="errors-heading">
+          <h2 id="errors-heading">Fix these fields</h2>
+          <ul>
+            {% for error in errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <section class="panel">
+        <div class="section-heading">
+          <h2>Search entries</h2>
+          <span>{{ entries|length }} shown</span>
+        </div>
+        <form class="inline-form" method="get" action="/glossary">
+          <input name="q" type="search" value="{{ query }}" placeholder="Search English, Chinese, alias, type, note, or status">
+          <button class="button" type="submit">Search</button>
+          {% if query %}<a href="/glossary">Clear</a>{% endif %}
+        </form>
+      </section>
+
+      <section class="panel">
+        <h2>Import CSV</h2>
+        <p>Upload a CSV file, or enter a file name already stored under <code>data/glossary/</code>.</p>
+        <form class="form" method="post" action="/glossary/import" enctype="multipart/form-data">
+          <label for="glossary_file">CSV file</label>
+          <input id="glossary_file" name="glossary_file" type="file" accept=".csv,text/csv">
+
+          <label for="file_name">Existing data/glossary file name <span>optional</span></label>
+          <input id="file_name" name="file_name" type="text" placeholder="elite_glossary.csv">
+
+          <button class="button" type="submit">Import glossary</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <h2>{% if edit_entry %}Edit entry #{{ edit_entry.id }}{% else %}Add entry{% endif %}</h2>
+        <form class="form" method="post" action="{% if edit_entry %}/glossary/{{ edit_entry.id }}{% else %}/glossary{% endif %}">
+          <label for="source_term_en">English source term</label>
+          <input id="source_term_en" name="source_term_en" type="text" maxlength="255" required value="{{ form.source_term_en or edit_entry.source_term_en if edit_entry else form.source_term_en or '' }}">
+
+          <label for="approved_term_zh">Approved Chinese term</label>
+          <input id="approved_term_zh" name="approved_term_zh" type="text" maxlength="255" required value="{{ form.approved_term_zh or edit_entry.approved_term_zh if edit_entry else form.approved_term_zh or '' }}">
+
+          <label for="aliases_en">Aliases <span>optional, separate with comma, semicolon, or pipe</span></label>
+          <input id="aliases_en" name="aliases_en" type="text" value="{{ form.aliases_en or edit_entry.aliases_en if edit_entry else form.aliases_en or '' }}">
+
+          <label for="entity_type">Entity type <span>optional</span></label>
+          <input id="entity_type" name="entity_type" type="text" maxlength="100" value="{{ form.entity_type or edit_entry.entity_type if edit_entry else form.entity_type or '' }}">
+
+          <label for="entry_status">Status</label>
+          {% set current_status = form.entry_status or edit_entry.status.value if edit_entry else form.entry_status or 'draft' %}
+          <select id="entry_status" name="entry_status">
+            {% for status in statuses %}
+              <option value="{{ status }}" {% if status == current_status %}selected{% endif %}>{{ status }}</option>
+            {% endfor %}
+          </select>
+
+          <label for="notes">Notes <span>optional</span></label>
+          <textarea id="notes" name="notes" rows="4">{{ form.notes or edit_entry.notes if edit_entry else form.notes or '' }}</textarea>
+
+          <div class="button-row">
+            <button class="button" type="submit">{% if edit_entry %}Update entry{% else %}Add entry{% endif %}</button>
+            {% if edit_entry %}<a href="/glossary">Cancel edit</a>{% endif %}
+          </div>
+        </form>
+      </section>
+
+      <section class="panel">
+        <h2>Entries</h2>
+        {% if entries %}
+          <table class="table">
+            <thead>
+              <tr>
+                <th>English</th>
+                <th>Chinese</th>
+                <th>Aliases</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Notes</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for entry in entries %}
+                <tr>
+                  <td>{{ entry.source_term_en }}</td>
+                  <td>{{ entry.approved_term_zh }}</td>
+                  <td>{{ entry.aliases_en or '' }}</td>
+                  <td>{{ entry.entity_type or '' }}</td>
+                  <td><span class="status-pill">{{ entry.status }}</span></td>
+                  <td>{{ entry.notes or '' }}</td>
+                  <td><a href="/glossary?edit_id={{ entry.id }}{% if query %}&q={{ query }}{% endif %}">Edit</a></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p>No glossary entries found.</p>
+        {% endif %}
+      </section>
     </main>
   </body>
 </html>
